@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 @Every("1s")
 public class TapoffPollingJob extends Job {
-    private Logger log = LoggerFactory.getLogger(TaponPollingJob.class);
+    private Logger log = LoggerFactory.getLogger(TapoffPollingJob.class);
 
     private final SqsReceiver<Tapoff> receiver;
     private final SessionManager manager;

@@ -6,6 +6,7 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Names;
 import com.openmarket.mariner.journeys.JourneyService;
 import com.openmarket.mariner.resource.AuthConstants;
+import com.openmarket.mariner.session.SessionManager;
 import com.openmarket.mariner.sms.SmsSender;
 import com.openmarket.mariner.tapons.SqsReceiver;
 import com.openmarket.mariner.tapons.Tapoff;
@@ -62,5 +63,11 @@ public class InteractionManagerModule extends AbstractModule {
     @Singleton
     public SmsSender smsSender(@Named("sms") WebTarget webTarget) {
         return new SmsSender(webTarget);
+    }
+
+    @Provides
+    @Singleton
+    public SessionManager sessionManager(SmsSender smsSender, JourneyService journeyService) {
+        return new SessionManager(smsSender, journeyService);
     }
 }

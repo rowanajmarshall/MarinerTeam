@@ -45,7 +45,7 @@ public class SqsReceiver<T> {
                                    .request(MediaType.APPLICATION_JSON_TYPE)
                                    .header("X-Request-Id", "123")
                                    .post(Entity.json(ImmutableMap.<String, String>of("namespace", "hackathon-lta",
-                                                                                        "queue", "lta-tapon-queue",
+                                                                                        "queue", queue,
                                                                                      "receipt", message.getReceipt())))
                                    .readEntity(String.class);
         log.info("Ack response: " + ackResponse);

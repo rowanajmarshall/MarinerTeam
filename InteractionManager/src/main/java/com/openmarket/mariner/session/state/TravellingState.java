@@ -7,8 +7,11 @@ import com.openmarket.mariner.session.event.ResponseEvent;
 import com.openmarket.mariner.session.event.TapOffEvent;
 import com.openmarket.mariner.session.event.TapOnEvent;
 import com.openmarket.mariner.sms.SmsSender;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TravellingState implements SessionState {
+    private Logger log = LoggerFactory.getLogger(TravellingState.class);
 
     private SmsSender smsSender;
     private JourneyService journeyService;
@@ -23,26 +26,26 @@ public class TravellingState implements SessionState {
 
     @Override
     public SessionState handleTapOn(TapOnEvent event) {
-        System.out.println("Travelling State handling tap on");
+        log.info("Travelling State handling tap on");
         return this;
     }
 
     @Override
     public SessionState handleTapOff(TapOffEvent event) {
-        System.out.println("Travelling State handling tap off");
+        log.info("Travelling State handling tap off");
         smsSender.send("Thanks for travelling with us have a nice day - Tess", event.getPhoneNumber());
         return null;
     }
 
     @Override
     public SessionState handleDisruption(DisruptionEvent event) {
-        System.out.println("Initial State handling disruption");
+        log.info("Initial State handling disruption");
         return this;
     }
 
     @Override
     public SessionState handleResponse(ResponseEvent event) {
-        System.out.println("Initial State handling response");
+        log.info("Initial State handling response");
         return this;
     }
 }

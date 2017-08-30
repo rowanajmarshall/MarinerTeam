@@ -7,8 +7,11 @@ import com.openmarket.mariner.session.event.ResponseEvent;
 import com.openmarket.mariner.session.event.TapOffEvent;
 import com.openmarket.mariner.session.event.TapOnEvent;
 import com.openmarket.mariner.sms.SmsSender;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WelcomedState implements SessionState {
+    private Logger log = LoggerFactory.getLogger(WelcomedState.class);
 
     private SmsSender smsSender;
     private JourneyService journeyService;
@@ -23,19 +26,19 @@ public class WelcomedState implements SessionState {
 
     @Override
     public SessionState handleTapOn(TapOnEvent event) {
-        System.out.println("Welcomed State handling tap on");
+        log.info("Welcomed State handling tap on");
         return this;
     }
 
     @Override
     public SessionState handleTapOff(TapOffEvent event) {
-        System.out.println("Welcomed State handling tap off");
+        log.info("Welcomed State handling tap off");
         return null;
     }
 
     @Override
     public SessionState handleDisruption(DisruptionEvent event) {
-        System.out.println("Welcomed State handling disruption");
+        log.info("Welcomed State handling disruption");
         return this;
     }
 
