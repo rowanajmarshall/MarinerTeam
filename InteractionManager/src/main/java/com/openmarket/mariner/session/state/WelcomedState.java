@@ -51,7 +51,7 @@ public class WelcomedState implements SessionState {
 
         StringBuilder builder = new StringBuilder("Take the ");
         for(Change change : journey.getChanges()) {
-            builder.append(change.getLine()).append(" line to ").append(change.getStop()).append(",");
+            builder.append(change.getLine()).append(" to ").append(change.getStop()).append(",");
         }
         builder.append(" arriving about ").append(journey.getArrivalTime());
         if(journey.isDisrupted()) {
@@ -60,7 +60,7 @@ public class WelcomedState implements SessionState {
         builder.append(" - Tess");
 
         // Send the search results
-        smsSender.send(builder.toString() + " - Tess", event.getPhoneNumber());
+        smsSender.send(builder.toString(), event.getPhoneNumber());
 
         // Switch to the Travelling state
         return new TravellingState(smsSender, journeyService, journey);
