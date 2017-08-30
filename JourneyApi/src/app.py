@@ -3,11 +3,12 @@ from collections import OrderedDict
 from flask import Flask, Response, request
 import requests
 import json
+import properties
 
 app = Flask(__name__)
 
-app_id = ""
-app_key = ""
+app_id = properties.app_id
+app_key = properties.app_key
 
 
 @app.route("/journey", methods=["GET"])
