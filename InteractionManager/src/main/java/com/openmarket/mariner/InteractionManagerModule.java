@@ -8,6 +8,7 @@ import com.openmarket.mariner.journeys.JourneyService;
 import com.openmarket.mariner.resource.AuthConstants;
 import com.openmarket.mariner.session.SessionManager;
 import com.openmarket.mariner.sms.SmsSender;
+import com.openmarket.mariner.tapons.Disrupt;
 import com.openmarket.mariner.tapons.SqsReceiver;
 import com.openmarket.mariner.tapons.Tapoff;
 import com.openmarket.mariner.tapons.Tapon;
@@ -51,6 +52,13 @@ public class InteractionManagerModule extends AbstractModule {
     @Singleton
     public SqsReceiver<Tapoff> tapoffReceiver(@Named("sqs") WebTarget webTarget) {
         return new SqsReceiver<Tapoff>(webTarget, "lta-tapoff-queue", Tapoff.class);
+    }
+
+
+    @Provides
+    @Singleton
+    public SqsReceiver<Disrupt> disruption(@Named("sqs") WebTarget webTarget) {
+        return new SqsReceiver<Disrupt>(webTarget, "lta-disrupt-queue", Disrupt.class);
     }
 
     @Provides

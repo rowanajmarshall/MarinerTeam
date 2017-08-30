@@ -49,6 +49,7 @@ public class SqsReceiver<T> {
                                                                                      "receipt", message.getReceipt())))
                                    .readEntity(String.class);
         log.info("Ack response: " + ackResponse);
+
         return Optional.of(messageBody);
     }
 }
