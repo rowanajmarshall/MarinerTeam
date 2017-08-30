@@ -1,5 +1,5 @@
 run: setup
-	python src/app.py
+	python3 src/app.py
 
 setup:
 	export FLASK_APP=src/app.py
