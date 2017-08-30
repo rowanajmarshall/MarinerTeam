@@ -21,11 +21,12 @@ public class SmsSender {
 
     public void send(String msg, String destination) {
         Response response =
-                 baseUri.queryParam("user", encode(AuthConstants.MO_SMS_USERNAME))
-                        .queryParam("pass", encode(AuthConstants.MO_SMS_PASSWORD))
+                 baseUri.queryParam("user", encode(AuthConstants.MT_SMS_USERNAME))
+                        .queryParam("pass", encode(AuthConstants.MT_SMS_PASSWORD))
                         .queryParam("smsto", destination)
                         .queryParam("smsfrom", encode("+447537402491"))
-                        .queryParam("smsmsg", encode(msg))
+                        .queryParam("smsmsg", encode(msg).replace("+", "%20"))
+                        .queryParam("split", "2")
                         .request(MediaType.APPLICATION_JSON)
                         .get();
 

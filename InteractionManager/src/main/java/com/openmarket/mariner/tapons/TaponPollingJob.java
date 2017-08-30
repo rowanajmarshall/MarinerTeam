@@ -25,7 +25,6 @@ public class TaponPollingJob extends Job {
     public void doJob() {
         try {
             receiver.receive().ifPresent(tapon -> manager.handleTapOnEvent(new TapOnEvent(tapon.getPhoneNumber(), tapon.getStationCode())));
-
         } catch (Exception e) {
             log.error("Tap on failed", e);
         }
