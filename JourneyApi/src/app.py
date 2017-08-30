@@ -13,8 +13,10 @@ app_key = properties.app_key
 
 @app.route("/journey", methods=["GET"])
 def home():
-    body = get_journey_info(request.args.get('from'), request.args.get('to'))
-    return Response(body, mimetype="application/json")
+    body = ""
+    status = 500
+    body, status = get_journey_info(request.args.get('from'), request.args.get('to'))
+    return Response(body, mimetype="application/json", status=status)
 
 
 def get_journey_info(station_from: str, station_to: str, mode="tube,overground"):
@@ -24,11 +26,30 @@ def get_journey_info(station_from: str, station_to: str, mode="tube,overground")
     res_json = request_journey(station_from, station_to, param_dict)
 
     if "Tfl.Api.Presentation.Entities.JourneyPlanner.DisambiguationResult" in res_json["$type"]:
-        disambs = solve_disambiguations(res_json)
+        disambs = solve_disambiguations(res_json, station_from, station_to)
         res_json = request_journey(disambs[0], disambs[1], param_dict)
 
-    return extract_departure_details(res_json)
+    if "exceptionType" in res_json and res_json["exceptionType"] == "EntityNotFoundException":
+        return None, 502
 
+    arrival_time, journey_name, is_disrupted = extract_departure_details(res_json)
+    changes = extract_changes(res_json)
+
+    res_dict = {"arrivalTime": arrival_time, "name": journey_name, "isDisrupted": is_disrupted, "changes": changes}
+    return json.dumps(res_dict), 200
+
+
+def extract_changes(journey_json: dict):
+    journey = journey_json["journeys"][0]
+    legs = journey["legs"]
+    changes = []
+    for index, leg in enumerate(legs):
+        if index == len(legs) - 1:
+            break
+
+        changes.append(leg["arrivalPoint"]["commonName"])
+
+    return changes
 
 def extract_departure_details(journey_json: dict):
     journey = journey_json["journeys"][0]
@@ -36,9 +57,8 @@ def extract_departure_details(journey_json: dict):
     journey_name = journey["legs"][0]["instruction"]["detailed"]
     is_disrupted = journey["legs"][0]["isDisrupted"]
 
-    res_dict = {"arrivalTime": arrival_time, "name": journey_name, "isDisrupted": is_disrupted}
+    return arrival_time, journey_name, is_disrupted
 
-    return json.dumps(res_dict)
 
 def request_journey(station_from: str, station_to: str, param_dict: dict):
     url = "https://api.tfl.gov.uk/Journey/JourneyResults/{}/to/{}".format(station_from, station_to)
@@ -46,25 +66,31 @@ def request_journey(station_from: str, station_to: str, param_dict: dict):
 
     return OrderedDict(json.loads(res))
 
-def solve_disambiguations(ordered_json: dict) -> (str, str):
-    station_from_ics = ""
-    station_to_ics = ""
 
-    for ele in ordered_json["fromLocationDisambiguation"]["disambiguationOptions"]:
-        if "icsCode" not in ele["place"]:
-            continue
-        vals = ele["place"]["modes"]
-        if "tube" in vals or "overground" in vals:
-            station_from_ics = ele["place"]["icsCode"]
-            break
+def solve_disambiguations(ordered_json: dict, station_from: str, station_to: str) -> (str, str):
+    station_from_ics = station_from
+    station_to_ics = station_to
 
-    for ele in ordered_json["toLocationDisambiguation"]["disambiguationOptions"]:
-        if "icsCode" not in ele["place"]:
-            continue
-        vals = ele["place"]["modes"]
-        if "tube" in vals or "overground" in vals:
-            station_to_ics = ele["place"]["icsCode"]
-            break
+    if not ordered_json["fromLocationDisambiguation"]["matchStatus"] == "identified":
+        for ele in ordered_json["fromLocationDisambiguation"]["disambiguationOptions"]:
+            if "icsCode" not in ele["place"]:
+                continue
+            vals = ele["place"]["modes"]
+            if "tube" in vals or "overground" in vals:
+                station_from_ics = ele["place"]["icsCode"]
+                break
+
+    if not ordered_json["toLocationDisambiguation"]["matchStatus"] == "identified":
+        for ele in ordered_json["toLocationDisambiguation"]["disambiguationOptions"]:
+            if "icsCode" not in ele["place"]:
+                continue
+            vals = ele["place"]["modes"]
+            if "tube" in vals or "overground" in vals:
+                station_to_ics = ele["place"]["icsCode"]
+                break
+
+    print(station_from_ics, station_to_ics)
+
     return station_from_ics, station_to_ics
 
 

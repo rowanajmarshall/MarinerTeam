@@ -11,5 +11,6 @@ Response:
     {
         "name": "District Line towards Upminster", 
         "isDisrupted": "true", 
-        "arrivalTime": "13:02:00"
+        "arrivalTime": "13:02:00", 
+	"changes": ["Victoria Station", "Euston Station"]
     }
