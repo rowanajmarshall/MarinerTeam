@@ -1,0 +1,21 @@
+server:
+  type: simple
+  applicationContextPath: /
+  adminContextPath: /admin
+  connector:
+    type: http
+    port: 7654
+  requestLog:
+    appenders:
+      - type: console
+        threshold: ALL
+        timeZone: UTC
+        target: stdout
+
+logging:
+  level: INFO
+  appenders:
+    - type: console
+      threshold: ALL
+      timeZone: UTC
+      target: stdout
