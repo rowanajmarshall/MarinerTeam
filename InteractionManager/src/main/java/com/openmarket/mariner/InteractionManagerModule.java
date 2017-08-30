@@ -6,6 +6,7 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Names;
 import com.openmarket.mariner.journeys.JourneyService;
 import com.openmarket.mariner.resource.AuthConstants;
+import com.openmarket.mariner.sms.SmsSender;
 import com.openmarket.mariner.tapons.SqsReceiver;
 import com.openmarket.mariner.tapons.Tapoff;
 import com.openmarket.mariner.tapons.Tapon;
@@ -31,6 +32,12 @@ public class InteractionManagerModule extends AbstractModule {
                                 .target("http://localhost:5000/")
                                 .register(AUTHENTICATION_FEATURE);
         });
+
+        bind(WebTarget.class).annotatedWith(Names.named("sms")).toProvider(() -> {
+            return ClientBuilder.newClient()
+                                .target("https://sms.openmarket.com/sms/v1/send")
+                                .register(AUTHENTICATION_FEATURE);
+        });
     }
 
     @Provides
@@ -49,5 +56,11 @@ public class InteractionManagerModule extends AbstractModule {
     @Singleton
     public JourneyService journeyService(@Named("journeyApi") WebTarget webTarget) {
         return new JourneyService(webTarget);
+    }
+
+    @Provides
+    @Singleton
+    public SmsSender smsSender(@Named("sms") WebTarget webTarget) {
+        return new SmsSender(webTarget);
     }
 }

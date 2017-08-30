@@ -9,18 +9,22 @@ import com.openmarket.mariner.session.event.TapOnEvent;
 import com.openmarket.mariner.session.state.InitialState;
 import com.openmarket.mariner.session.state.SessionState;
 import com.openmarket.mariner.sms.SmsSender;
-
+import com.openmarket.mariner.tapons.TaponPollingJob;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SessionManager {
-    Map<String, SessionState> sessions = new TreeMap<>();
+    private Logger log = LoggerFactory.getLogger(TaponPollingJob.class);
+
+    private Map<String, SessionState> sessions = new ConcurrentHashMap<>();
 
     @Inject
-    SmsSender smsSender;
+    private SmsSender smsSender;
 
     @Inject
-    JourneyService journeyService;
+    private JourneyService journeyService;
 
     public void handleTapOnEvent(TapOnEvent event) {
         SessionState state = sessions.get(event.getPhoneNumber());
@@ -32,14 +36,17 @@ public class SessionManager {
     }
 
     public void handleTapOffEvent(TapOffEvent event) {
+        log.info("Received tapOffEvent: " + event);
         sessions.put(event.getPhoneNumber(), sessions.get(event.getPhoneNumber()).handleTapOff(event));
     }
 
     public void handleDisruptionEvent(DisruptionEvent event) {
+        log.info("Received DisruptionEvent: " + event);
         sessions.put(event.getPhoneNumber(), sessions.get(event.getPhoneNumber()).handleDisruption(event));
     }
 
     public void handleResponseEvent(ResponseEvent event) {
+        log.info("Received ResponseEvent: " + event);
         sessions.put(event.getPhoneNumber(), sessions.get(event.getPhoneNumber()).handleResponse(event));
     }
 }

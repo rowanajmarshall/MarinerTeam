@@ -7,8 +7,11 @@ import java.util.Optional;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SqsReceiver<T> {
+    private Logger log = LoggerFactory.getLogger(SqsReceiver.class);
 
     private static final ObjectMapper mapper = new ObjectMapper();
     private WebTarget target;
@@ -40,10 +43,12 @@ public class SqsReceiver<T> {
 
         String ackResponse = target.path("ackMessage")
                                    .request(MediaType.APPLICATION_JSON_TYPE)
+                                   .header("X-Request-Id", "123")
                                    .post(Entity.json(ImmutableMap.<String, String>of("namespace", "hackathon-lta",
                                                                                         "queue", "lta-tapon-queue",
                                                                                      "receipt", message.getReceipt())))
                                    .readEntity(String.class);
+        log.info("Ack response: " + ackResponse);
         return Optional.of(messageBody);
     }
 }
