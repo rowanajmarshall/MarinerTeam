@@ -36,6 +36,10 @@ public class SessionManager {
     }
 
     public synchronized void handleTapOffEvent(TapOffEvent event) {
+        if(sessions.get(event.getPhoneNumber()) == null) {
+            log.error("No session for " + event);
+            return;
+        }
         log.info("Received tapOffEvent: " + event);
         sessions.get(event.getPhoneNumber()).handleTapOff(event);
         sessions.remove(event.getPhoneNumber());
@@ -43,13 +47,20 @@ public class SessionManager {
     }
 
     public synchronized void handleDisruptionEvent(DisruptionEvent event) {
+        if(sessions.get(event.getPhoneNumber()) == null) {
+            log.error("No session for " + event);
+            return;
+        }
         log.info("Received DisruptionEvent: " + event);
         sessions.put(event.getPhoneNumber(), sessions.get(event.getPhoneNumber()).handleDisruption(event));
     }
 
     public synchronized void handleResponseEvent(ResponseEvent event) {
+        if(sessions.get(event.getPhoneNumber()) == null) {
+            log.error("No session for " + event);
+            return;
+        }
         log.info("Received ResponseEvent: " + event);
-
         sessions.put(event.getPhoneNumber(), sessions.get(event.getPhoneNumber()).handleResponse(event));
     }
 }
