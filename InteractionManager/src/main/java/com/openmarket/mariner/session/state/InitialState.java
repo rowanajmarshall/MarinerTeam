@@ -23,7 +23,7 @@ public class InitialState implements SessionState {
         smsSender.send("Hi, where are you going today? - Tess", event.getPhoneNumber());
 
         // Initiate Welcomed state
-        return new WelcomedState(smsSender, journeyService);
+        return new WelcomedState(smsSender, journeyService, event.getStationId());
     }
 
     @Override

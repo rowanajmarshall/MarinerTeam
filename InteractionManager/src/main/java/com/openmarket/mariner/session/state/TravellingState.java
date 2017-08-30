@@ -8,16 +8,16 @@ import com.openmarket.mariner.session.event.TapOffEvent;
 import com.openmarket.mariner.session.event.TapOnEvent;
 import com.openmarket.mariner.sms.SmsSender;
 
-public class WelcomedState implements SessionState {
+public class TravellingState implements SessionState {
 
     private SmsSender smsSender;
     private JourneyService journeyService;
-    private String origin;
+    private Journey journey;
 
-    public WelcomedState(SmsSender smsSender, JourneyService journeyService, String origin) {
+    public TravellingState(SmsSender smsSender, JourneyService journeyService, Journey journey) {
         this.smsSender = smsSender;
         this.journeyService = journeyService;
-        this.origin = origin;
+        this.journey = journey;
     }
 
     @Override
@@ -27,6 +27,7 @@ public class WelcomedState implements SessionState {
 
     @Override
     public SessionState handleTapOff(TapOffEvent event) {
+        smsSender.send("Thanks for travelling with us have a nice day - Tess", event.getPhoneNumber());
         return null;
     }
 
@@ -37,13 +38,6 @@ public class WelcomedState implements SessionState {
 
     @Override
     public SessionState handleResponse(ResponseEvent event) {
-        // Process the response by searching
-        Journey journey = journeyService.getJourney(origin, event.getMessage(), false);
-
-        // Send the search results
-        smsSender.send(journey.toString() + " - Tess", event.getPhoneNumber());
-
-        // Switch to the Travelling state
-        return new TravellingState(smsSender, journeyService, journey);
+        return this;
     }
 }
