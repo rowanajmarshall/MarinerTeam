@@ -12,5 +12,8 @@ Response:
         "name": "District Line towards Upminster", 
         "isDisrupted": "true", 
         "arrivalTime": "13:02:00", 
-	"changes": ["District Line to Victoria", "Victoria Line to Euston", "Northern Line to Kentish Town"]
+	    "changes": 
+	        [{line: "District Line", stop: "Victoria"}
+	         {line: "Victoria Line", stop: "Euston"},
+	         {line: "Northern Line", stop: "Kentish Town"}]
     }
