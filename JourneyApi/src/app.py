@@ -6,8 +6,8 @@ import json
 
 app = Flask(__name__)
 
-app_id = "4edf17eb"
-app_key = "b636e2f5137c96854e78e5e2a4bb1326"
+app_id = ""
+app_key = ""
 
 
 @app.route("/journey", methods=["GET"])
