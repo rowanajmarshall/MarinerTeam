@@ -7,13 +7,13 @@ import java.io.IOException;
 import javax.inject.Inject;
 
 @Every("1s")
-public class TaponPollingJob extends Job {
+public class TapoffPollingJob extends Job {
 
-    private final SqsReceiver<Tapon> receiver;
+    private final SqsReceiver<Tapoff> receiver;
     private final SessionManager manager;
 
     @Inject
-    public TaponPollingJob(SqsReceiver<Tapon> receiver, SessionManager manager) {
+    public TapoffPollingJob(SqsReceiver<Tapoff> receiver, SessionManager manager) {
         this.receiver = receiver;
         this.manager = manager;
     }
@@ -22,7 +22,7 @@ public class TaponPollingJob extends Job {
     public void doJob() {
 
         try {
-            receiver.receive().ifPresent(tapon -> manager.initiate(tapon));
+            receiver.receive().ifPresent(tapoff -> manager.sessionFor(tapoff.getPhoneNumber()).tapoff());
 
         } catch (IOException e) {
             throw new RuntimeException(e);

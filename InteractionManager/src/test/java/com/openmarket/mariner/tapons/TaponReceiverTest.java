@@ -17,6 +17,5 @@ public class TaponReceiverTest {
         WebTarget target = ClientBuilder.newClient()
                             .target("https://sqs.openmarket.com/sqs/v1")
                             .register(feature);
-         new TaponReceiver(target).receive();
     }
 }

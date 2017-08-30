@@ -9,10 +9,11 @@ public class JourneyService {
         baseUri = webTarget;
     }
 
-    public Journey getJourney(String from, String to) {
+    public Journey getJourney(String from, String to, boolean busOnly) {
         return baseUri.path("journey")
                       .queryParam("from", from)
                       .queryParam("to", to)
+                      .queryParam("bus_only", busOnly)
                       .request()
                       .get()
                       .readEntity(Journey.class);

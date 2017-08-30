@@ -1,52 +1,52 @@
 package com.openmarket.mariner.journeys;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-
-import java.util.ArrayList;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.MoreObjects;
+import java.util.List;
 
 public class Journey {
     private String name;
     private boolean isDisrupted;
     private String arrivalTime;
-    private ArrayList<Change> changes;
+    private List<Change> changes;
 
     @JsonCreator
-    public Journey(String name, boolean isDisrupted, String arrivalTime, ArrayList<Change> changes) {
+    public Journey(@JsonProperty("name") String name, @JsonProperty("isDisrupted") boolean isDisrupted, @JsonProperty("arrivalTime") String arrivalTime, @JsonProperty("changes") List<Change> changes) {
         this.name = name;
         this.isDisrupted = isDisrupted;
         this.arrivalTime = arrivalTime;
         this.changes = changes;
     }
 
+    @JsonProperty
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
+    @JsonProperty
     public boolean isDisrupted() {
         return isDisrupted;
     }
 
-    public void setDisrupted(boolean disrupted) {
-        isDisrupted = disrupted;
-    }
-
+    @JsonProperty
     public String getArrivalTime() {
         return arrivalTime;
     }
 
-    public void setArrivalTime(String arrivalTime) {
-        this.arrivalTime = arrivalTime;
-    }
-
-    public ArrayList<Change> getChanges() {
+    @JsonProperty
+    public List<Change> getChanges() {
         return changes;
     }
 
-    public void setChanges(ArrayList<Change> changes) {
-        this.changes = changes;
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                          .add("name", name)
+                          .add("isDisrupted", isDisrupted)
+                          .add("arrivalTime", arrivalTime)
+                          .add("changes", changes)
+                          .toString();
     }
 }

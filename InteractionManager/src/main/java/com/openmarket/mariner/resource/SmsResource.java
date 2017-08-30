@@ -1,8 +1,11 @@
 package com.openmarket.mariner.resource;
 
+import com.google.inject.Inject;
 import com.openmarket.mariner.model.ModelObject;
+import com.openmarket.mariner.session.SessionManager;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import java.util.Optional;
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -15,13 +18,13 @@ import javax.ws.rs.core.Response;
 @Path("/sms")
 @Api(value = "SMS resource")
 public class SmsResource {
-//
-//    private final SessionManager sessionManager;
-//
-//    @Inject
-//    public SmsResource(SessionManager sessionManager) {
-//        this.sessionManager = sessionManager;
-//    }
+
+    private final SessionManager sessionManager;
+
+    @Inject
+    public SmsResource(SessionManager sessionManager) {
+        this.sessionManager = sessionManager;
+    }
 
     @GET
     @PermitAll
@@ -30,8 +33,8 @@ public class SmsResource {
     @ApiOperation(value = "Receive SMS",
                   response = ModelObject.class)
     public Response get(@QueryParam("smsfrom") String phoneNumber, @QueryParam("smsmsg") String message) {
-        //sessionManager.getSession(phoneNumber).received(message);
         System.out.println("Got SMS " +  message + " from " + phoneNumber);
+        Optional.ofNullable(sessionManager.sessionFor(phoneNumber)).ifPresent(session -> session.mosms(message));
         return Response.ok().build();
     }
 }
