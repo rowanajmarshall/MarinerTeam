@@ -15,6 +15,7 @@ public class WelcomedState implements SessionState {
     private String origin;
 
     public WelcomedState(SmsSender smsSender, JourneyService journeyService, String origin) {
+        System.out.println("New Welcomed State");
         this.smsSender = smsSender;
         this.journeyService = journeyService;
         this.origin = origin;
@@ -22,21 +23,25 @@ public class WelcomedState implements SessionState {
 
     @Override
     public SessionState handleTapOn(TapOnEvent event) {
+        System.out.println("Welcomed State handling tap on");
         return this;
     }
 
     @Override
     public SessionState handleTapOff(TapOffEvent event) {
+        System.out.println("Welcomed State handling tap off");
         return null;
     }
 
     @Override
     public SessionState handleDisruption(DisruptionEvent event) {
+        System.out.println("Welcomed State handling disruption");
         return this;
     }
 
     @Override
     public SessionState handleResponse(ResponseEvent event) {
+        System.out.println("Welcomed State handling response");
         // Process the response by searching
         Journey journey = journeyService.getJourney(origin, event.getMessage(), false);
 

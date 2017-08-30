@@ -13,12 +13,14 @@ public class InitialState implements SessionState {
     private JourneyService journeyService;
 
     public InitialState(SmsSender smsSender, JourneyService journeyService) {
+        System.out.println("new Initial State");
         this.smsSender = smsSender;
         this.journeyService = journeyService;
     }
 
     @Override
     public SessionState handleTapOn(TapOnEvent event) {
+        System.out.println("Initial State handling tap on");
         // Send Welcome
         smsSender.send("Hi, where are you going today? - Tess", event.getPhoneNumber());
 
@@ -28,18 +30,21 @@ public class InitialState implements SessionState {
 
     @Override
     public SessionState handleTapOff(TapOffEvent event) {
+        System.out.println("Initial State handling tap off");
         // this would be quite strange
         return null;
     }
 
     @Override
     public SessionState handleDisruption(DisruptionEvent event) {
+        System.out.println("Initial State handling disruption");
         // Ditto
         return this;
     }
 
     @Override
     public SessionState handleResponse(ResponseEvent event) {
+        System.out.println("Initial State handling response");
         // Ditto
         return this;
     }
