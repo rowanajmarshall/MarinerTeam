@@ -1,5 +1,6 @@
 package com.openmarket.mariner.session.state;
 
+import com.openmarket.mariner.journeys.Change;
 import com.openmarket.mariner.journeys.Journey;
 import com.openmarket.mariner.journeys.JourneyService;
 import com.openmarket.mariner.session.event.DisruptionEvent;
@@ -48,8 +49,18 @@ public class WelcomedState implements SessionState {
         // Process the response by searching
         Journey journey = journeyService.getJourney(origin, event.getMessage(), false);
 
+        StringBuilder builder = new StringBuilder("Take the ");
+        for(Change change : journey.getChanges()) {
+            builder.append(change.getLine()).append(" line to ").append(change.getStop()).append(",");
+        }
+        builder.append(" arriving about ").append(journey.getArrivalTime());
+        if(journey.isDisrupted()) {
+            builder.append(", sorry about the poor service today");
+        }
+        builder.append(" - Tess");
+
         // Send the search results
-        smsSender.send(journey.toString() + " - Tess", event.getPhoneNumber());
+        smsSender.send(builder.toString() + " - Tess", event.getPhoneNumber());
 
         // Switch to the Travelling state
         return new TravellingState(smsSender, journeyService, journey);
