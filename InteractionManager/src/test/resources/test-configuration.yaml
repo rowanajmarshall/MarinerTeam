@@ -1,0 +1,20 @@
+server:
+  type: simple
+  applicationContextPath: /
+  adminContextPath: /admin
+  connector:
+    type: http
+    port: 0
+  requestLog:
+      appenders:
+        - type: file
+          currentLogFilename: target/it-access.log
+          threshold: DEBUG
+          archive: false
+
+logging:
+  level: DEBUG
+  appenders:
+    - type: file
+      currentLogFilename: target/it.log
+      archive: false
