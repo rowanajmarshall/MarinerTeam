@@ -1,6 +1,7 @@
 package com.openmarket.mariner.session;
 
 import com.google.inject.Inject;
+import com.openmarket.mariner.journeys.JourneyService;
 import com.openmarket.mariner.session.event.DisruptionEvent;
 import com.openmarket.mariner.session.event.ResponseEvent;
 import com.openmarket.mariner.session.event.TapOffEvent;
@@ -18,24 +19,27 @@ public class SessionManager {
     @Inject
     SmsSender smsSender;
 
+    @Inject
+    JourneyService journeyService;
+
     public void handleTapOnEvent(TapOnEvent event) {
         SessionState state = sessions.get(event.getPhoneNumber());
         if(state == null) {
-            state = new InitialState(smsSender);
+            state = new InitialState(smsSender, journeyService);
             sessions.put(event.getPhoneNumber(), state);
         }
         state.handleTapOn(event);
     }
 
     public void handleTapOffEvent(TapOffEvent event) {
-        sessions.get(event.getPhoneNumber()).handleTapOff(event);
+        sessions.put(event.getPhoneNumber(), sessions.get(event.getPhoneNumber()).handleTapOff(event));
     }
 
     public void handleDisruptionEvent(DisruptionEvent event) {
-        sessions.get(event.getPhoneNumber()).handleDisruption(event);
+        sessions.put(event.getPhoneNumber(), sessions.get(event.getPhoneNumber()).handleDisruption(event));
     }
 
     public void handleResponseEvent(ResponseEvent event) {
-        sessions.get(event.getPhoneNumber()).handleResponse(event);
+        sessions.put(event.getPhoneNumber(), sessions.get(event.getPhoneNumber()).handleResponse(event));
     }
 }
