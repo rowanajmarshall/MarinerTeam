@@ -1,28 +1,29 @@
 package com.openmarket.mariner.session;
 
+import com.openmarket.mariner.session.event.DisruptionEvent;
+import com.openmarket.mariner.session.event.ResponseEvent;
+import com.openmarket.mariner.session.event.TapOffEvent;
+import com.openmarket.mariner.session.state.SessionState;
 import com.openmarket.mariner.tapons.Tapon;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class SessionManager {
-    private SessionFactory sessionFactory;
-    public ConcurrentMap<String, Session> sessions = new ConcurrentHashMap<>();
-
-    public SessionManager(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
+    Map<String, SessionState> sessions = new TreeMap<>();
 
     public void initiate(Tapon tapon) {
-        final Session initialSession = sessionFactory.create(tapon.getPhoneNumber(), tapon.getStationCode());
-
-        Optional.ofNullable(sessions.put(tapon.getPhoneNumber(), initialSession))
-            .ifPresent(oldSession -> oldSession.tapoff());
-
-        initialSession.tapon();
+        //
     }
 
-    public Session sessionFor(String phoneNumber) {
-        return sessions.get(phoneNumber);
+    public void handleTapOffEvent(TapOffEvent event) {
+        sessions.get(event.getPhoneNumber()).handleTapOff(event);
+    }
+
+    public void handelDisruptionEvent(DisruptionEvent event) {
+        sessions.get(event.getPhoneNumber()).handleDisruption(event);
+    }
+
+    public void handleResponseEvent(ResponseEvent event) {
+        sessions.get(event.getPhoneNumber()).handleResponse(event);
     }
 }
