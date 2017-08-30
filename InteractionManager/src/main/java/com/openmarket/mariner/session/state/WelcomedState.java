@@ -4,40 +4,25 @@ import com.openmarket.mariner.session.event.DisruptionEvent;
 import com.openmarket.mariner.session.event.ResponseEvent;
 import com.openmarket.mariner.session.event.TapOffEvent;
 import com.openmarket.mariner.session.event.TapOnEvent;
-import com.openmarket.mariner.sms.SmsSender;
 
-public class InitialState implements SessionState {
-
-    private SmsSender smsSender;
-
-    public InitialState(SmsSender smsSender) {
-        this.smsSender = smsSender;
-    }
-
+public class WelcomedState implements SessionState {
     @Override
     public SessionState handleTapOn(TapOnEvent event) {
-        // Send Welcome
-        smsSender.send("Hi, where are you going today? - Tess", event.getPhoneNumber());
-
-        // Initiate Welcomed state
-        return this;
+        return null;
     }
 
     @Override
     public SessionState handleTapOff(TapOffEvent event) {
-        // this would be quite strange
-        return this;
+        return null;
     }
 
     @Override
     public SessionState handleDisruption(DisruptionEvent event) {
-        // Ditto
-        return this;
+        return null;
     }
 
     @Override
     public SessionState handleResponse(ResponseEvent event) {
-        // Ditto
-        return this;
+        return null;
     }
 }
