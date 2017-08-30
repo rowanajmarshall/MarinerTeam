@@ -1,9 +1,10 @@
 package com.openmarket.mariner.session.event;
 
 public class ResponseEvent extends BaseEvent {
-    String message;
+    private String message;
 
-    public void setMessage(String message) {
+    public ResponseEvent(String phoneNumber, String message) {
+        super(phoneNumber);
         this.message = message;
     }
 

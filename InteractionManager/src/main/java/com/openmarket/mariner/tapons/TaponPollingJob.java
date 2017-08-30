@@ -20,7 +20,6 @@ public class TaponPollingJob extends Job {
 
     @Override
     public void doJob() {
-
         try {
             receiver.receive().ifPresent(tapon -> manager.initiate(tapon));
 

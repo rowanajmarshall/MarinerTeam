@@ -1,6 +1,7 @@
 package com.openmarket.mariner.tapons;
 
 import com.openmarket.mariner.session.SessionManager;
+import com.openmarket.mariner.session.event.TapOffEvent;
 import de.spinscale.dropwizard.jobs.Job;
 import de.spinscale.dropwizard.jobs.annotations.Every;
 import java.io.IOException;
@@ -22,7 +23,7 @@ public class TapoffPollingJob extends Job {
     public void doJob() {
 
         try {
-            receiver.receive().ifPresent(tapoff -> manager.sessionFor(tapoff.getPhoneNumber()).tapoff());
+            receiver.receive().ifPresent(tapoff -> manager.handleTapOffEvent(new TapOffEvent(tapoff.getPhoneNumber())));
 
         } catch (IOException e) {
             throw new RuntimeException(e);

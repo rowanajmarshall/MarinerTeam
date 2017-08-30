@@ -3,9 +3,9 @@ package com.openmarket.mariner.resource;
 import com.google.inject.Inject;
 import com.openmarket.mariner.model.ModelObject;
 import com.openmarket.mariner.session.SessionManager;
+import com.openmarket.mariner.session.event.ResponseEvent;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import java.util.Optional;
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -34,7 +34,7 @@ public class SmsResource {
                   response = ModelObject.class)
     public Response get(@QueryParam("smsfrom") String phoneNumber, @QueryParam("smsmsg") String message) {
         System.out.println("Got SMS " +  message + " from " + phoneNumber);
-        Optional.ofNullable(sessionManager.sessionFor(phoneNumber)).ifPresent(session -> session.mosms(message));
+        sessionManager.handleResponseEvent(new ResponseEvent(phoneNumber, message));
         return Response.ok().build();
     }
 }

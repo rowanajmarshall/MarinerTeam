@@ -3,7 +3,7 @@ package com.openmarket.mariner.session.event;
 public class BaseEvent {
     private String phoneNumber;
 
-    public void setPhoneNumber(String phoneNumber) {
+    public BaseEvent(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
