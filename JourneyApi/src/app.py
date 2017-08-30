@@ -43,11 +43,8 @@ def extract_changes(journey_json: dict):
     journey = journey_json["journeys"][0]
     legs = journey["legs"]
     changes = []
-    for index, leg in enumerate(legs):
-        if index == len(legs) - 1:
-            break
-
-        changes.append(leg["arrivalPoint"]["commonName"])
+    for leg in legs:
+        changes.append(leg["instruction"]["summary"])
 
     return changes
 
@@ -76,7 +73,7 @@ def solve_disambiguations(ordered_json: dict, station_from: str, station_to: str
             if "icsCode" not in ele["place"]:
                 continue
             vals = ele["place"]["modes"]
-            if "tube" in vals or "overground" in vals:
+            if "bus" in vals or "tube" in vals or "overground" in vals:
                 station_from_ics = ele["place"]["icsCode"]
                 break
 
@@ -85,7 +82,7 @@ def solve_disambiguations(ordered_json: dict, station_from: str, station_to: str
             if "icsCode" not in ele["place"]:
                 continue
             vals = ele["place"]["modes"]
-            if "tube" in vals or "overground" in vals:
+            if "bus" in vals or "tube" in vals or "overground" in vals:
                 station_to_ics = ele["place"]["icsCode"]
                 break
 
