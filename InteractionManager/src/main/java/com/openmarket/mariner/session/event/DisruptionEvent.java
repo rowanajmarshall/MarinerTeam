@@ -5,4 +5,6 @@ public class DisruptionEvent extends BaseEvent {
     public DisruptionEvent(String phoneNumber) {
         super(phoneNumber);
     }
+
+
 }

@@ -1,6 +1,5 @@
 package com.openmarket.mariner.session;
 
-import com.google.inject.Inject;
 import com.openmarket.mariner.journeys.JourneyService;
 import com.openmarket.mariner.session.event.DisruptionEvent;
 import com.openmarket.mariner.session.event.ResponseEvent;
@@ -9,37 +8,59 @@ import com.openmarket.mariner.session.event.TapOnEvent;
 import com.openmarket.mariner.session.state.InitialState;
 import com.openmarket.mariner.session.state.SessionState;
 import com.openmarket.mariner.sms.SmsSender;
-
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SessionManager {
-    Map<String, SessionState> sessions = new TreeMap<>();
+    private Logger log = LoggerFactory.getLogger(SessionManager.class);
 
-    @Inject
-    SmsSender smsSender;
+    private Map<String, SessionState> sessions = new ConcurrentHashMap<>();
 
-    @Inject
-    JourneyService journeyService;
+    private SmsSender smsSender;
+    private JourneyService journeyService;
 
-    public void handleTapOnEvent(TapOnEvent event) {
+    public SessionManager(SmsSender smsSender, JourneyService journeyService) {
+        this.smsSender = smsSender;
+        this.journeyService = journeyService;
+    }
+
+    public synchronized void handleTapOnEvent(TapOnEvent event) {
+        log.info("Received tapOnEvent: " + event);
         SessionState state = sessions.get(event.getPhoneNumber());
         if(state == null) {
             state = new InitialState(smsSender, journeyService);
-            sessions.put(event.getPhoneNumber(), state);
         }
-        state.handleTapOn(event);
+        sessions.put(event.getPhoneNumber(), state.handleTapOn(event));
     }
 
-    public void handleTapOffEvent(TapOffEvent event) {
-        sessions.put(event.getPhoneNumber(), sessions.get(event.getPhoneNumber()).handleTapOff(event));
+    public synchronized void handleTapOffEvent(TapOffEvent event) {
+        if(sessions.get(event.getPhoneNumber()) == null) {
+            log.error("No session for " + event);
+            return;
+        }
+        log.info("Received tapOffEvent: " + event);
+        sessions.get(event.getPhoneNumber()).handleTapOff(event);
+        sessions.remove(event.getPhoneNumber());
+
     }
 
-    public void handleDisruptionEvent(DisruptionEvent event) {
+    public synchronized void handleDisruptionEvent(DisruptionEvent event) {
+        if(sessions.get(event.getPhoneNumber()) == null) {
+            log.error("No session for " + event);
+            return;
+        }
+        log.info("Received DisruptionEvent: " + event);
         sessions.put(event.getPhoneNumber(), sessions.get(event.getPhoneNumber()).handleDisruption(event));
     }
 
-    public void handleResponseEvent(ResponseEvent event) {
+    public synchronized void handleResponseEvent(ResponseEvent event) {
+        if(sessions.get(event.getPhoneNumber()) == null) {
+            log.error("No session for " + event);
+            return;
+        }
+        log.info("Received ResponseEvent: " + event);
         sessions.put(event.getPhoneNumber(), sessions.get(event.getPhoneNumber()).handleResponse(event));
     }
 }

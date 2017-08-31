@@ -1,5 +1,7 @@
 package com.openmarket.mariner.session.event;
 
+import com.google.common.base.MoreObjects;
+
 public class BaseEvent {
     private String phoneNumber;
 
@@ -9,5 +11,12 @@ public class BaseEvent {
 
     public String getPhoneNumber() {
         return phoneNumber;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                          .add("phoneNumber", phoneNumber)
+                          .toString();
     }
 }

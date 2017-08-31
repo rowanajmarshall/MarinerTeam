@@ -1,13 +1,8 @@
 package com.openmarket.mariner;
 
 import com.google.inject.Injector;
-import com.google.inject.Key;
 import com.google.inject.Stage;
-import com.google.inject.TypeLiteral;
 import com.hubspot.dropwizard.guice.GuiceBundle;
-import com.openmarket.mariner.journeys.JourneyService;
-import com.openmarket.mariner.tapons.SqsReceiver;
-import com.openmarket.mariner.tapons.Tapon;
 import de.spinscale.dropwizard.jobs.GuiceJobsBundle;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
@@ -25,11 +20,11 @@ public class InteractionManagerApplication extends Application<InteractionManage
     public void run(InteractionManagerConfiguration dropwizardStarterConfiguration, Environment environment) throws Exception {
         environment.jersey().packages("com.openmarket.mariner.resource");
 
-        SqsReceiver<Tapon> taponReceiver = injector.getInstance(Key.get(new TypeLiteral<SqsReceiver<Tapon>>(){}));
-        System.out.println(taponReceiver.receive());
-
-        JourneyService journeyService = injector.getInstance(JourneyService.class);
-        System.out.println(journeyService.getJourney("Gunnersbury", "Kentish Town", true));
+//        SqsReceiver<Tapon> taponReceiver = injector.getInstance(Key.get(new TypeLiteral<SqsReceiver<Tapon>>(){}));
+//        System.out.println(taponReceiver.receive());
+//
+//        JourneyService journeyService = injector.getInstance(JourneyService.class);
+//        System.out.println(journeyService.getJourney("Gunnersbury", "Kentish Town", true));
 
     }
 

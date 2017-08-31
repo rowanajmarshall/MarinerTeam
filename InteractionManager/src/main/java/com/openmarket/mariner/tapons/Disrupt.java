@@ -3,11 +3,11 @@ package com.openmarket.mariner.tapons;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Tapoff {
+public class Disrupt {
     private String phoneNumber;
 
     @JsonCreator
-    public Tapoff(@JsonProperty("msisdn") String phoneNumber) {
+    public Disrupt(@JsonProperty("msisdn") String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
