@@ -1,0 +1,27 @@
+doctype html
+html(lang="en")
+    head
+        title= pageTitle
+        script(src="/scripts/jquery-3.2.1.min.js")
+        script(src="/scripts/script.js")
+        script.
+            $(function() {
+                let listitems = '';
+                $.each(stations, function (key, value) {
+                    listitems += '<option value=' + value + '>' + key + '</option>';
+                });
+                $("#station").append(listitems);
+            });
+    body
+        h1 London Travel Assistant - Admin Panel
+        p Enter a MSISDN
+            input(type="password" name="msisdn" id="msisdn")
+            button(type="button" onclick="getStatus()") Get Status
+        #status
+        p Pick a station
+            select(name="station" id="station")
+        p.
+            Please choose from an option below
+        button(type="button" onclick="tapOn()") Tap On
+        button(type="button" onclick="disrupt()") Disrupt
+        button(type="button" onclick="tapOff()") Tap Off

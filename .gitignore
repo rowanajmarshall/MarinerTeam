@@ -28,3 +28,4 @@ pom.xml.releaseBackup
 release.properties
 properties.py
 *.pyc
+**/node_modules
